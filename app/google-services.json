@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "637467568007",
+    "project_id": "gptracks-fe2de",
+    "storage_bucket": "gptracks-fe2de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637467568007:android:b5fc142a0cd5826ab19522",
+        "android_client_info": {
+          "package_name": "com.example.gptracks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "637467568007-0c6n53591r9dt2fpnid2v4l80rjf6gk3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2CO5253oZrkkvKOu-dhUhn1sJO9KsUh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "637467568007-0c6n53591r9dt2fpnid2v4l80rjf6gk3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
