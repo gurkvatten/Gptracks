@@ -56,7 +56,7 @@ class Tracks() : AppCompatActivity() {
 
             if (snapshot != null) {
                 // Update the RecyclerView with the new data
-
+                adapter.updateTracks(trackList)
 
             }
         }
@@ -88,7 +88,7 @@ class Tracks() : AppCompatActivity() {
     private fun updateRecyclerView(documents: CollectionReference) {
         documents.get()
             .addOnSuccessListener { querySnapshot ->
-                trackList.clear()
+                adapter.updateTracks(trackList)
                 for (document in querySnapshot.documents) {
                     val track = document.toObject<Track>()
                     if (track != null) {

@@ -1,5 +1,6 @@
 package com.example.gptracks
 
+import android.text.method.TextKeyListener.clear
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +34,6 @@ class TracksRecyclerAdapter(private var trackList: MutableList<Track>) :
     }
 
     fun updateTracks(tracks: List<Track>) {
-        this.trackList.clear()
         this.trackList.addAll(tracks)
         notifyDataSetChanged()
     }
