@@ -1,5 +1,6 @@
 package com.example.gptracks
 
+
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,10 +23,15 @@ class MainActivity : AppCompatActivity() {
     lateinit var passView: EditText
     val db = Firebase.firestore
     val trackCollection = db.collection("Tracks")
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val db = Firebase.firestore
+
         setContentView(R.layout.activity_main)
+        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+        adapter = TracksAdapter(ArrayList<Tracks>())
+
+
 
         auth = Firebase.auth
 
@@ -60,4 +66,32 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, Tracks::class.java)
         startActivity(intent)
     }
+
+
+
+    private fun fetchTracks() {
+        val firestore = FirebaseFirestore.getInstance()
+        val tracksCollection = firestore.collection("test")
+
+        tracksCollection.get()
+            .addOnSuccessListener { result ->
+                val tracksList = ArrayList<Tracks>()
+                for (document in result) {
+                    Log.d(TAG, "${document.id} => ${document.data}")
+                    val track = document.toObject(Tracks::class.java)
+                    tracksList.add(track)
+                }
+                adapter.setTracks(tracksList)
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+    }
+    private fun updateRecyclerView(tracksList: ArrayList<Tracks>) {
+        TracksAdapter(tracksList)
+
+    }
 }
+
+
+
