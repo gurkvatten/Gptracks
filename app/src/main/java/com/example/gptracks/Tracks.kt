@@ -1,10 +1,13 @@
 package com.example.gptracks
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +20,7 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 
-class Tracks() : AppCompatActivity() {
+class Tracks() : AppCompatActivity(), TracksRecyclerAdapter.OnInfoClickListener {
     private val trackList = mutableListOf<Track>()
     lateinit var auth: FirebaseAuth
     private lateinit var storageRef: StorageReference
@@ -35,10 +38,9 @@ class Tracks() : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.listTracks)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        
 
 
-        adapter = TracksRecyclerAdapter(trackList)
+        adapter = TracksRecyclerAdapter(trackList, this)
         recyclerView.adapter = adapter
         updateRecyclerView(trackCollection)
         // Log statement to verify if the adapter has been set
@@ -65,30 +67,61 @@ class Tracks() : AppCompatActivity() {
             addNewTrack()
         }
 
+
+    }
+    override fun onInfoClick(track: Track) {
+        showTrackInfo(track)
     }
 
-   fun addNewTrack() {
+    private fun showTrackInfo(track: Track) {
+        val alert = AlertDialog.Builder(this)
+        alert.setTitle("Track Information")
+        alert.setMessage("Name: ${track.name}\nCountry: ${track.country}\nInfo: ${track.info} ")
+        alert.setPositiveButton("OK", null)
+        alert.show()
+    }
+
+
+
+    fun addNewTrack() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_add_track, null)
+        val nameEditText = dialogView.findViewById<EditText>(R.id.nameEditText)
+        val countryEditText = dialogView.findViewById<EditText>(R.id.countryEditText)
+        val infoEditText = dialogView.findViewById<EditText>(R.id.infoEditText)
 
         val alert = AlertDialog.Builder(this)
-        val itemEditText = EditText(this)
-        alert.setMessage("Add new Track")
-        alert.setTitle("Enter track name")
-
-        alert.setView(itemEditText)
-
-        alert.setView(itemEditText)
-
-        alert.setPositiveButton("Submit")  { dialog, positiveButton ->
-
-
-        }
+            .setTitle("Add New Track")
+            .setView(dialogView)
+            .setPositiveButton("Submit") { dialog, _ ->
+                val name = nameEditText.text.toString()
+                val country = countryEditText.text.toString()
+                val info = infoEditText.text.toString()
+                saveTrackToFirebase(name, country, info)
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
 
         alert.show()
     }
-    private fun updateRecyclerView(documents: CollectionReference) {
+
+    private fun saveTrackToFirebase(name: String, country: String, info: String) {
+        val track = Track(name, country, info)
+        trackCollection.add(track)
+            .addOnSuccessListener { documentReference ->
+                trackList.add(track)
+                // Uppdatera RecyclerView
+                adapter.updateTracks(trackList)
+
+                Toast.makeText(this, "Track saved to Firebase", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to save track to Firebase", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "Error saving track to Firebase", e)
+            }
+    }
+   private fun updateRecyclerView(documents: CollectionReference) {
         documents.get()
             .addOnSuccessListener { querySnapshot ->
-                adapter.updateTracks(trackList)
                 for (document in querySnapshot.documents) {
                     val track = document.toObject<Track>()
                     if (track != null) {
@@ -102,6 +135,12 @@ class Tracks() : AppCompatActivity() {
             }
     }
     companion object {
+        fun showinfo() {
+
+
+        }
+
+
         private const val TAG = "TracksActivity"
     }
 
