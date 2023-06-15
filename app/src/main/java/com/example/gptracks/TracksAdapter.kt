@@ -17,7 +17,6 @@ class TracksAdapter(var tracksList: ArrayList<Tracks>) :
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         val track = tracksList[position]
-        holder.bind(track)
     }
 
     override fun getItemCount(): Int {
@@ -33,9 +32,6 @@ class TracksAdapter(var tracksList: ArrayList<Tracks>) :
         private val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
         private val countryTextView: TextView = itemView.findViewById(R.id.countryTextView)
 
-        fun bind(track: Tracks) {
-            nameTextView.text = track.name
-            countryTextView.text = track.country
-        }
+
     }
 }
